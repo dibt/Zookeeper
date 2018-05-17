@@ -15,8 +15,8 @@ public class ZkUnitTest {
         user.setId(1);
         user.setName("bentengdi");
         String path="/bentengdi";
-       // System.out.println(ZkUtils.createNode(path,user, CreateMode.PERSISTENT));
-        System.out.println(ZkUtils.deleteNode(path));
+       System.out.println(ZkUtils.createNode(path,user, CreateMode.PERSISTENT));
+        //System.out.println(ZkUtils.deleteNode(path));
 
         //System.out.println(ZkUtils.createNode(path,user, CreateMode.PERSISTENT));
 //        System.out.println(ZkUtils.exits(path));
@@ -26,14 +26,14 @@ public class ZkUnitTest {
 //        user1 =(User) ZkUtils.getData(path);
 //        System.out.println(user1.toString());
 
-        ZkUtils.subscribeChildChanges(path);
+        //ZkUtils.subscribeChildChanges(path);
         //System.out.println(ZkUtils.deleteNode(path));
         //System.out.println(ZkUtils.createNode(path,user, CreateMode.PERSISTENT));
         //System.out.println(ZkUtils.createNode("/bentengdi/test",user, CreateMode.PERSISTENT));
-        ZkUtils.subscribeDataChanges(path);
-        System.out.println(ZkUtils.createNode("/bentengdi/test/test",user, CreateMode.PERSISTENT));
-        user.setId(23);
-        ZkUtils.writeData(path,user);
-        Thread.sleep(10000);
+//        ZkUtils.subscribeDataChanges(path);
+//        System.out.println(ZkUtils.createNode("/bentengdi/test/test",user, CreateMode.PERSISTENT));
+//        user.setId(23);
+//        ZkUtils.writeData(path,user);
+//        Thread.sleep(10000);
     }
 }

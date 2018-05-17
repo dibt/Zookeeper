@@ -1,11 +1,11 @@
-package com.di.zkservice;
+package com.di.zkservice.leaderselect;
 
 /**
  * Created by bentengdi on 2018/5/16.
  */
 
 import com.di.pojo.RunningData;
-import org.I0Itec.zkclient.IZkDataListener;
+import com.di.zkservice.ZKDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkException;
 import org.I0Itec.zkclient.exception.ZkInterruptedException;

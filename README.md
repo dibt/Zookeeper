@@ -9,16 +9,16 @@ Zookeeper Demo
 获取Servers节点的子节点列表，来了解当前系统哪些服务器可用，这该过程叫做服务发现。接着这些服务器会尝试创建Master临时节点，谁创建成
 功谁就是Master，其他的两台就作为Slave。所有的Work Server必需关注Master节点的删除事件。通过监听Master节点的删除事件，来了解Master
 服务器是否宕机（创建临时节点的服务器一旦宕机，它所创建的临时节点即会自动删除）。一旦Master服务器宕机，必需开始新一轮的Master选举。
-
-WorkServer是主工作类；
+WorkServer是主工作类；<br/>
 RunningData用来描述WorkServer的基本信息；
 
 ## 分布式锁的实现
 我们常说的锁是单进程多线程锁，在多线程并发编程中，用于线程之间的数据同步，保护共享资源的访问。而分布式锁，指在分布式环境下，
 保护跨进程、跨主机、跨网络的共享资源，实现互斥访问，保证一致性。
-分布式锁的实现：
-redis
-zookeeper
+分布式锁的实现：<br/>
+redis<br/>
+zookeeper<br/>
 两种方式，使用zookeeper实现独享锁和读写锁
 ### 独享锁
+具体的实现类ExclusiveLock
 ### 读锁和写锁

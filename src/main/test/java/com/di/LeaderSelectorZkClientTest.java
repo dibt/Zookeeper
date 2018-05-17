@@ -1,7 +1,7 @@
 package com.di;
 
 import com.di.pojo.RunningData;
-import com.di.zkservice.WorkServer;
+import com.di.zkservice.leaderselect.WorkServer;
 import com.di.zkservice.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.SerializableSerializer;
