@@ -19,6 +19,4 @@ RunningData用来描述WorkServer的基本信息；
 redis<br/>
 zookeeper<br/>
 两种方式，使用zookeeper实现独享锁和读写锁
-### 独享锁
-具体的实现类ExclusiveLock
-### 读锁和写锁
+
