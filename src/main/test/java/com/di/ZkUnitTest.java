@@ -10,7 +10,7 @@ import org.junit.Test;
  */
 public class ZkUnitTest {
     @Test
-    public void cerateNodeTest() throws InterruptedException {
+    public void cerateNodeTest() {
         User user = new User();
         user.setId(1);
         user.setName("bentengdi");
@@ -19,7 +19,7 @@ public class ZkUnitTest {
         //System.out.println(ZkUtils.deleteNode(path));
 
         //System.out.println(ZkUtils.createNode(path,user, CreateMode.PERSISTENT));
-//        System.out.println(ZkUtils.exits(path));
+       //System.out.println(ZkUtils.exits(path));
 //        User user1 =(User) ZkUtils.getData(path);
 //        System.out.println(user1.toString());
 

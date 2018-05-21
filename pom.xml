@@ -20,6 +20,9 @@
 
     <org.apache.zookeeper-version>3.4.10</org.apache.zookeeper-version>
     <com.101tec.zkclient-version>0.10</com.101tec.zkclient-version>
+
+    <javax.mail-version>1.4.7</javax.mail-version>
+    <javax.activation-version>1.1.1</javax.activation-version>
   </properties>
 
   <dependencies>
@@ -43,6 +46,31 @@
     <version>${org.apache.zookeeper-version}</version>
     <type>pom</type>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.17</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>${javax.mail-version}</version>
+    </dependency>
+
+
+    <!-- https://mvnrepository.com/artifact/javax.activation/activation -->
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>activation</artifactId>
+      <version>${javax.activation-version}</version>
+    </dependency>
+
+
+
   </dependencies>
 
   <profiles>
