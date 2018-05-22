@@ -11,8 +11,9 @@ import org.I0Itec.zkclient.exception.ZkException;
 import org.I0Itec.zkclient.exception.ZkInterruptedException;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
-import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  * 工作服务器
  */
 public class WorkServer {
-    private static final Logger LOGGER = Logger.getLogger(WorkServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WorkServer.class);
 
     // 记录服务器状态
     private volatile boolean running = false;

@@ -23,6 +23,10 @@
 
     <javax.mail-version>1.4.7</javax.mail-version>
     <javax.activation-version>1.1.1</javax.activation-version>
+
+    <org.slf4j.api-version>1.7.25</org.slf4j.api-version>
+    <org.slf4j-log4j12>1.7.25</org.slf4j-log4j12>
+    <log4j-version>1.2.17</log4j-version>
   </properties>
 
   <dependencies>
@@ -47,12 +51,26 @@
     <type>pom</type>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>${org.slf4j-log4j12}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${org.slf4j.api-version}</version>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/log4j/log4j -->
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
+      <version>${log4j-version}</version>
     </dependency>
+
+
 
     <!-- https://mvnrepository.com/artifact/javax.mail/mail -->
     <dependency>

@@ -2,9 +2,10 @@ package com.di.zkservice;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.SerializableSerializer;
-import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -13,7 +14,7 @@ import java.util.Properties;
  * Created by bentengdi on 2018/5/16.
  */
 public class ZkUtils {
-    private static final Logger LOGGER = Logger.getLogger(ZkUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZkUtils.class);
     private static ZkClient zkClient = null;
     static {
         getZkClient();
