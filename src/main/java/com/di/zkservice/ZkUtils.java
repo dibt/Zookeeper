@@ -30,6 +30,7 @@ public class ZkUtils {
         }
         String zkServices = properties.getProperty("zk.services");
         zkClient=new ZkClient(zkServices,10000,10000,new SerializableSerializer());
+        //zkClient.setZkSerializer(new MyZkSerializer());
         LOGGER.info("load zksernices.properties success");
         return  zkServices;
     }

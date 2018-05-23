@@ -21,5 +21,9 @@ zookeeper<br/>
 两种方式，使用zookeeper实现独享锁和读写锁
 
 ## 代码使用slf4j的接口，具体日志实现框架用log4j标准输出日志格式：控制台、文件、滚动日期文件、固定大小文件以及ERROR级别日志发送邮件
-
+<br/>
+### 使用ZkClient获取节点数据的时候如果出现序列化的错误，需要自己重新实现ZkSerializer类，然后调用ZkClient的setZkSerializer方法<br/>
+### 默认实现是SerializableSerializer类<br/>
+<br/>
+####  未完待续
 
