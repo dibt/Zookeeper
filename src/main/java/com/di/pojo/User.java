@@ -1,36 +1,14 @@
 package com.di.pojo;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
- * Created by bentengdi on 2018/5/16.
+ * node存储的信息
  */
-//注意：一定要实现序列化接口 Serializable
+@Data
 public class User implements Serializable {
     private Integer id;
     private String name;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }

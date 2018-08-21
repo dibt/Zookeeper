@@ -5,7 +5,11 @@ import org.I0Itec.zkclient.IZkChildListener;
 import java.util.List;
 
 /**
- * Created by bentengdi on 2018/5/16.
+ * IZKChildListener事件说明针对于下面三个事件触发：
+ * - 新增子节点
+ * - 减少子节点
+ * - 删除节点
+ * 注意： 不监听节点内容的变化
  */
 public class ZkChildListener implements IZkChildListener {
 
@@ -16,7 +20,7 @@ public class ZkChildListener implements IZkChildListener {
      */
     @Override
     public void handleChildChange(String parentPath, List<String> currentChilds) throws Exception {
-        System.out.println(parentPath);
-        System.out.println(currentChilds.toString());
+        System.out.println("parentPath: " +parentPath);
+        System.out.println("currentChilds: " +currentChilds);
     }
 }
