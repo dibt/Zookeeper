@@ -1,6 +1,6 @@
 package com.di;
 
-import com.di.pojo.RunningData;
+import com.di.pojo.NodeInfo;
 import com.di.zkservice.leaderselect.WorkServer;
 import com.di.zkservice.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
@@ -13,10 +13,10 @@ import java.util.List;
 
 
 /**
- * Created by bentengdi on 2018/5/17.
+ * 模拟主从备份master选举
  */
 public class LeaderSelectorZkClientTest {
-    private static final int CLIENT_NUM=10;
+    private static final int CLIENT_NUM=2;
     private static final String zkservice= ZkUtils.getZkClient();
     @Test
     public void leaderSelectTest(){
@@ -31,16 +31,16 @@ public class LeaderSelectorZkClientTest {
                 ZkClient zkClient = new ZkClient(zkservice, 10000, 10000, new SerializableSerializer());
                 zkClientList.add(zkClient);
                 //创建serverData
-                RunningData runningData = new RunningData();
-                runningData.setCid(Long.valueOf(i));
-                runningData.setName("Client #"+i);
+                NodeInfo nodeInfo = new NodeInfo();
+                nodeInfo.setId(Long.valueOf(i));
+                nodeInfo.setName("Client #"+i);
                 //创建服务
-                WorkServer workServer =new WorkServer(runningData);
+                WorkServer workServer =new WorkServer(nodeInfo);
                 workServer.setZkClient(zkClient);
                 workServerList.add(workServer);
                 workServer.start();
             }
-            Thread.sleep(30000);
+            Thread.sleep(30000000);
         }catch (Exception e){}
         finally {
             System.out.println("Shutting down...");

@@ -13,7 +13,7 @@
 功谁就是Master，其他的两台就作为Slave。所有的Work Server必需关注Master节点的删除事件。通过监听Master节点的删除事件，来了解Master
 服务器是否宕机（创建临时节点的服务器一旦宕机，它所创建的临时节点即会自动删除）。一旦Master服务器宕机，必需开始新一轮的Master选举。
 WorkServer是主工作类；<br/>
-RunningData用来描述WorkServer的基本信息；
+NodeInfo用来描述WorkServer的基本信息；
 
 ## 分布式锁的实现(还未实现，后续会不断更新)
 我们常说的锁是单进程多线程锁，在多线程并发编程中，用于线程之间的数据同步，保护共享资源的访问。而分布式锁，指在分布式环境下，

@@ -8,8 +8,8 @@ import java.io.Serializable;
  * 工作服务器信息
  */
 @Data
-public class RunningData implements Serializable{
+public class NodeInfo implements Serializable{
     private static final long serialVersionUID = 4260577459043203630L;
-    private Long cid;
+    private Long id;
     private String name;
 }

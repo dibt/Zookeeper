@@ -15,7 +15,7 @@ public class MyZkSerializer implements ZkSerializer {
     public Object deserialize(byte[] bytes) throws ZkMarshallingError {
         try {
             ObjectInputStream inputStream = new TcclAwareObjectIputStream(new ByteArrayInputStream(bytes));
-            object = inputStream.readObject();
+            object = inputStream.readObject(); 
             return object;
         } catch (ClassNotFoundException e) {
             throw new ZkMarshallingError("Unable to find object class.", e);

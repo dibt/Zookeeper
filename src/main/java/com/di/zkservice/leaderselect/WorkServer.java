@@ -1,19 +1,15 @@
 package com.di.zkservice.leaderselect;
 
-/**
- * Created by bentengdi on 2018/5/16.
- */
 
-import com.di.pojo.RunningData;
+import com.di.pojo.NodeInfo;
 import com.di.zkservice.ZKDataListener;
+import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkException;
 import org.I0Itec.zkclient.exception.ZkInterruptedException;
 import org.I0Itec.zkclient.exception.ZkNoNodeException;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.zookeeper.CreateMode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -22,33 +18,35 @@ import java.util.concurrent.TimeUnit;
 /**
  * 工作服务器
  */
+@Slf4j
 public class WorkServer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WorkServer.class);
 
     // 记录服务器状态
     private volatile boolean running = false;
 
     private ZkClient zkClient;
     // Master节点对应zookeeper中的节点路径
-    private static final String MASTER_PATH = "/bentengdi";
+    private static final String MASTER_PATH = "/povosdi";
     // 监听Master节点删除事件
     private ZKDataListener dataListener;
     // 记录当前节点的基本信息
-    private RunningData serverData;
+    private NodeInfo currentserverData;
     // 记录集群中Master节点的基本信息
-    private RunningData masterData;
+    private NodeInfo masterData;
 
     private ScheduledExecutorService delayExector = Executors.newScheduledThreadPool(1);
+
     private int delayTime = 10;
 
-    public WorkServer(RunningData rd) {
-        this.serverData = rd; // 记录服务器基本信息
+    public WorkServer(NodeInfo nodeInfo) {
+        // 记录服务器基本信息
+        this.currentserverData = nodeInfo;
         this.dataListener = new ZKDataListener() {
             @Override
             public void handleDataDeleted(String dataPath) throws Exception {
-                if (masterData != null && masterData.getName().equals(serverData.getName())){
+                if (masterData != null && masterData.getName().equals(currentserverData.getName())){
                     // 上一轮的Master服务器是自己，则直接抢
-                    //takeMaster();
+                    takeMaster();
                     System.out.println("打印master信息："+masterData.toString());
                 } else {
                     // 否则，延迟10秒后再抢。主要是应对网络抖动，给上一轮的Master服务器优先抢占master的权利，避免不必要的数据迁移开销
@@ -78,9 +76,8 @@ public class WorkServer {
         running = true;
         // 订阅Master节点删除事件
         zkClient.subscribeDataChanges(MASTER_PATH, dataListener);
-        // 争抢Master
+        // 刚刚启动,争抢Master
         takeMaster();
-
     }
 
     // 停止服务器
@@ -103,13 +100,12 @@ public class WorkServer {
             return;
         try {
             // 尝试创建Master临时节点
-            zkClient.create(MASTER_PATH,serverData,CreateMode.EPHEMERAL);
-            masterData = serverData;
-            System.out.println("争抢Master成功"+serverData.getName()+" is master");
+            zkClient.create(MASTER_PATH,currentserverData,CreateMode.EPHEMERAL);
+            masterData = currentserverData;
+            System.out.println("争抢Master成功"+currentserverData.getName()+" is master");
             // 服务器每隔10秒释放一次Master
             delayExector.schedule(new Runnable() {//执行一次
                 public void run() {
-                    // TODO Auto-generated method stub
                     if (checkMaster()){
                         releaseMaster();
                     }
@@ -118,14 +114,14 @@ public class WorkServer {
 
         } catch (ZkNodeExistsException e) { // 已被其他服务器创建了
             // 读取Master节点信息
-            RunningData runningData = zkClient.readData(MASTER_PATH);
-            if (runningData == null) {
+            NodeInfo nodeInfo = zkClient.readData(MASTER_PATH);
+            if (nodeInfo == null) {
                 takeMaster(); // 没读到，读取瞬间Master节点宕机了，有机会再次争抢
             } else {
-                masterData = runningData;
+                masterData = nodeInfo;
             }
         } catch (Exception e) {
-            LOGGER.error("create master node error:",e);
+            log.error("create master node error:",e);
         }
 
     }
@@ -140,9 +136,9 @@ public class WorkServer {
     // 检测自己是否为Master
     private boolean checkMaster() {
         try {
-            RunningData eventData=zkClient.readData(MASTER_PATH);
+            NodeInfo eventData=zkClient.readData(MASTER_PATH);
             masterData = eventData;
-            if (masterData.getName().equals(serverData.getName())) {
+            if (masterData.getName().equals(currentserverData.getName())) {
                 return true;
             }
             return false;

@@ -30,7 +30,7 @@ public class ZkUtils {
             LOGGER.error("load zkservices.properties error{}",e);
         }
         String zkServices = properties.getProperty("zk.services");
-        zkClient=new ZkClient(zkServices,10000,10000,new SerializableSerializer());
+        zkClient=new ZkClient(zkServices,10000,10000, new SerializableSerializer());
         LOGGER.info("load zksernices.properties success");
         return zkServices;
     }
