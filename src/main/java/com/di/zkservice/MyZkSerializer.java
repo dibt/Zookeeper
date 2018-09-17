@@ -8,7 +8,8 @@ import org.apache.commons.io.Charsets;
 import java.io.*;
 
 /**
- * Created by bentengdi on 2018/5/23.
+ * 使用ZkClient获取节点数据的时候如果出现序列化的错误，需要自己重新实现ZkSerializer类，然后调用ZkClient的setZkSerializer方法
+ * 默认实现是SerializableSerializer类
  */
 public class MyZkSerializer implements ZkSerializer {
     private Object  object;

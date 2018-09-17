@@ -1,11 +1,11 @@
 package com.di.zkservice;
 
+import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.SerializableSerializer;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.List;
@@ -14,8 +14,8 @@ import java.util.Properties;
 /**
  * zk操作工具实现类
  */
+@Slf4j
 public class ZkUtils {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ZkUtils.class);
     private static ZkClient zkClient = null;
     static {
         getZkClient();
@@ -27,11 +27,11 @@ public class ZkUtils {
         try{
             properties.load(inputStream);
         }catch (Exception e){
-            LOGGER.error("load zkservices.properties error{}",e);
+            log.error("load zkservices.properties error{}",e);
         }
         String zkServices = properties.getProperty("zk.services");
         zkClient=new ZkClient(zkServices,10000,10000, new SerializableSerializer());
-        LOGGER.info("load zksernices.properties success");
+        log.info("load zksernices.properties success");
         return zkServices;
     }
 
@@ -64,6 +64,7 @@ public class ZkUtils {
     public static Object getNodeData(String path){
         return zkClient.readData(path,new Stat());
     }
+
 
     /**
      * 删除单个节点或递归删除
