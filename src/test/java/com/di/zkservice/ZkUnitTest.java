@@ -1,7 +1,7 @@
-package com.di;
+package com.di.zkservice;
 
+import com.di.utils.ZkUtils;
 import com.di.pojo.User;
-import com.di.zkservice.ZkUtils;
 import org.apache.zookeeper.CreateMode;
 import org.junit.Test;
 

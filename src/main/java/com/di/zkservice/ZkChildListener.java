@@ -1,5 +1,6 @@
 package com.di.zkservice;
 
+import com.di.enums.LockStatus;
 import org.I0Itec.zkclient.IZkChildListener;
 import org.apache.zookeeper.Watcher;
 

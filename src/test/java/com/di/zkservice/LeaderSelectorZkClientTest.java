@@ -1,8 +1,8 @@
-package com.di;
+package com.di.zkservice;
 
-import com.di.pojo.NodeInfo;
+import com.di.utils.ZkUtils;
 import com.di.zkservice.leaderselect.WorkServer;
-import com.di.zkservice.ZkUtils;
+import com.di.pojo.NodeInfo;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.serialize.SerializableSerializer;
 import org.junit.Test;
