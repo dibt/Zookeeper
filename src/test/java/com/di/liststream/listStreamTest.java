@@ -1,22 +1,22 @@
 package com.di.liststream;
 
-import com.di.pojo.User;
+import com.di.pojo.TestModel;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static java.util.stream.Collectors.*;
+
 public class listStreamTest {
 
-    public List<User> getList(){
-        List<User> list = new ArrayList<>();
+    public List<TestModel> getList(){
+        List<TestModel> list = new ArrayList<>();
         for(int i=0; i<10; i++){
-            list.add(new User(i,"test"+i));
+            list.add(new TestModel(i,"test"+i,new BigDecimal(Math.random())));
         }
         return list;
     }
@@ -42,10 +42,10 @@ public class listStreamTest {
     @Test
     public void listStreamDistinct(){
         //list中添加两个相同的对象
-        List<User> list = getList();
-        User user = new User(4,"aesvd");
-        User user1 = user;
-        list.addAll(Arrays.asList(user,user1));
+        List<TestModel> list = getList();
+        TestModel testModel = new TestModel(4,"aesvd",new BigDecimal(Math.random()));
+        TestModel testModel1 = testModel;
+        list.addAll(Arrays.asList(testModel,testModel1));
 
         list.parallelStream().distinct().forEachOrdered(System.out::println);
     }
@@ -65,10 +65,10 @@ public class listStreamTest {
     @Test
     public void listStreamFilterById() {
         //list中添加一个id相同的对象
-        List<User> list = getList();
-        User user = new User(0,"test00");
-        list.addAll(Arrays.asList(user));
-        list.parallelStream().filter(distinctByKey(User::getId)).forEach(System.out::println);
+        List<TestModel> list = getList();
+        TestModel testModel = new TestModel(0,"test00",new BigDecimal(Math.random()));
+        list.addAll(Arrays.asList(testModel));
+        list.parallelStream().filter(distinctByKey(TestModel::getId)).forEach(System.out::println);
     }
 
     /**
@@ -78,7 +78,68 @@ public class listStreamTest {
      */
     @Test
     public void listStreamFilterByName(){
-        getList().parallelStream().filter(user -> (!user.getName().contains("8"))).forEach(System.out::println);
+        getList().parallelStream().filter(testModel -> (!testModel.getName().contains("8"))).forEach(System.out::println);
+    }
+
+    /**
+     * list map()
+     * 将对象和属性映射成一对一的map 拿所有对象的某个属性
+     */
+    @Test
+    public void listStreamMap(){
+        List<String> list = getList().parallelStream().map(TestModel::getName).collect(toList());
+        list.stream().forEach(System.out::println);
+    }
+
+    /**
+     * list map()
+     * 将对象和属性映射成一对一的map 对所有对象的某个属性求和
+     */
+    @Test
+    public void listStreamMapSum(){
+        BigDecimal totalPrice = getList().parallelStream().map(TestModel::getPrice).reduce(BigDecimal.ZERO,BigDecimal::add);
+        System.out.println(totalPrice);
+    }
+
+    /**
+     * list toMap()
+     * 需要注意的是：
+     * toMap 如果集合对象有重复的key，会报错Duplicate key ....
+     * 可以用 (k1,k2)->k1 来设置，如果有重复的key,则保留key1,舍弃key2
+     * 通过使用Function接口中的默认方法identity()来改进代码
+     */
+    @Test
+    public void listStreamToMap(){
+        List<TestModel> list = getList();
+        TestModel testModel = new TestModel(0,"test00",new BigDecimal(Math.random()));
+        list.addAll(Arrays.asList(testModel));
+        //根据一个字段维度转map
+        //Map<Integer,TestModel> testModelMap = list.parallelStream().collect(toMap(TestModel::getId,Function.identity(),(t1,t2)->t1));
+        //Map<Integer,TestModel> testModelMap = list.parallelStream().collect(toMap(TestModel::getId,part->part,(t1,t2)->t1));
+        //根据多个字段维度转map
+        Map<Object,Object> testModelMap = list.parallelStream().collect(toMap(key->key.getId()+key.getName(),part->part,(t1,t2)->t1));
+        showMap(testModelMap);
+
+    }
+    private void showMap(Map<Object,Object> map){
+        map.keySet().forEach(key->{
+            System.out.println("key = "+key+",value = "+map.get(key));
+        });
+    }
+
+    /**
+     * list groupBy()
+     * 将属性值相同的放在一起
+     */
+    @Test
+    public void listStreamGroupBy(){
+        List<TestModel> list = getList();
+        TestModel testModel = new TestModel(0,"test00",new BigDecimal(Math.random()));
+        list.addAll(Arrays.asList(testModel));
+        Map<Integer,List<TestModel>> map = list.parallelStream().collect(groupingBy(TestModel::getId));
+        map.keySet().forEach(key->{
+            System.out.println("key = "+key+",value = "+map.get(key));
+        });
     }
 
 
