@@ -8,6 +8,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
 
@@ -142,5 +145,122 @@ public class listStreamTest {
         });
     }
 
+    /**
+     * list summarizingDouble()
+     * 获取最大值、最小值、平均值、总和值、总数。
+     */
+    @Test
+    public void listStream(){
+        //DoubleSummaryStatistics summaryStatistics = Stream.of(1, 3, 4).collect(Collectors.summarizingDouble(x -> x));
+        IntSummaryStatistics intSummaryStatistics =getList().parallelStream().map(TestModel::getId).collect(toList()).parallelStream().collect(summarizingInt(i -> i));
+        System.out.println(intSummaryStatistics.getMax());
+    }
+
+    /**
+     * list partitioningBy()
+     * 把数据分成两部分，key为ture/false
+     */
+    @Test
+    public void listStreamPartition(){
+        Map<Boolean, List<Integer>> collect4 = Stream.of(1, 3, 4).collect(Collectors.partitioningBy(x -> x >2));
+        //第二个参数默认是Collectors.toList()
+        //Map<Boolean, Long> collect4 = Stream.of(1, 3, 4).collect(Collectors.partitioningBy(x -> x > 2, Collectors.counting()));
+        collect4.keySet().forEach(key->{
+            System.out.println("key = "+key+",value = "+collect4.get(key));
+        });
+    }
+
+    /**
+     * list  joining()
+     * 拼接字符串
+     */
+    @Test
+    public void listStreamJoin(){
+        System.out.println(Stream.of("a", "b", "c").collect(Collectors.joining(",")));
+    }
+
+    /**
+     *list reducing()
+     * 在求累计值的时候，可以对参数值进行改变(第二个参数)
+     * reduce没有第二个参数
+     */
+    @Test
+    public void listStreamReducing(){
+        System.out.println(Stream.of(1,3,4).reduce(2,(x,y) -> x+y));
+        System.out.println(Stream.of(1, 3, 4).collect(Collectors.reducing(2, x -> x + 1, (x, y) -> x + y)));
+    }
+
+    /**
+     * list toMap()
+     * 将一个 List 转成 map[1=1,2=2,3=3,4=4,5=5]，然后与另一个map[1=1,2=4,3=9,4=16,5=25]的相同key的value进行相加。
+     * 注意, toMap 的最后一个参数是 Supplier<Map> ， 是 Map 提供器，而不是 Map 对象。
+     */
+    @Test
+    public void listStreamSupplier(){
+        List<Integer> list = Arrays.asList(1,2,3,4,5);
+        Supplier<Map<Integer,Integer>> mapSupplier = () -> list.stream().collect(Collectors.toMap(x->x,y-> y * y));
+        //将Map中相同的key的value相加
+        Map<Integer, Integer> mapValueAdd = list.stream().collect(Collectors.toMap(x->x, y->y, (v1,v2) -> v1+v2, mapSupplier));
+        System.out.println(mapValueAdd);
+    }
+
+    /**
+     * list collectingAndThen()
+     * 先执行collect操作后再执行第二个参数的表达式
+     */
+    @Test
+    public void listStreamCollectingAndThen(){
+        String str= Stream.of("a", "b", "c").collect(Collectors.collectingAndThen(Collectors.joining(","), x -> x + "d"));
+        System.out.println(str);
+
+    }
+
+    /**
+     * list mapping()
+     */
+    @Test
+    public void listStreamMapping(){
+        Predicate<Integer> predicate = x -> x > 5;
+        System.out.println(predicate.test(2));
+        System.out.println(Stream.of("a", "b", "c").collect(Collectors.mapping(x -> x.toUpperCase(), Collectors.joining(","))));
+    }
+
+    /**
+     * 一个二维数组转换为一维数组
+     */
+    @Test
+    public void listStreamFlatMap(){
+        List<List<Integer>> nums = Arrays.asList(Arrays.asList(1,2,3), Arrays.asList(1,4,9), Arrays.asList(1,8,27));
+        Stream<List<Integer>> listStream = Stream.of(Arrays.asList(1, 2, 3), Arrays.asList(2, 3, 6));
+        listStream.flatMap(item -> item.parallelStream()).collect(toList()).forEach(System.out::println);
+        Stream.of(Arrays.asList(1, 2, 3), Arrays.asList(2, 3, 6)).flatMap(lists -> lists.stream()).collect(Collectors.toList()).forEach(System.out::print);
+    }
+
+    /**
+     * list concat()
+     * 流连接操作
+     */
+    @Test
+    public void listStreamConcat(){
+        Stream.concat(Stream.of(1, 2), Stream.of(3)).forEach(System.out::print);
+    }
+
+    /**
+     * list  peek()
+     * peek：生成一个包含原Stream的所有元素的新Stream，新Stream每个元素被消费之前都会执行peek给定的消费函数
+     */
+    @Test
+    public void listStreamPeek(){
+        Stream.of(2, 4).peek(x -> System.out.print(x - 1)).forEach(System.out::print);
+    }
+
+    /**
+     * Stream 主要有四类接口：
+     *
+     * 流到流之间的转换：比如 filter(过滤), map(映射转换), mapTo[Int|Long|Double] (到原子类型流的转换), flatMap(高维结构平铺)，flatMapTo[Int|Long|Double], sorted(排序)，distinct(不重复值)，peek(执行某种操作，流不变，可用于调试)，limit(限制到指定元素数量), skip(跳过若干元素) ；
+     * 流到终值的转换： 比如 toArray（转为数组），reduce（推导结果），collect（聚合结果），min(最小值), max(最大值), count (元素个数)， anyMatch (任一匹配), allMatch(所有都匹配)， noneMatch(一个都不匹配)， findFirst（选择首元素），findAny(任选一元素) ；
+     * 直接遍历： forEach (不保序遍历，比如并行流), forEachOrdered（保序遍历) ；
+     * 构造流： empty (构造空流)，of (单个元素的流及多元素顺序流)，iterate (无限长度的有序顺序流)，generate (将数据提供器转换成无限非有序的顺序流)， concat (流的连接)， Builder (用于构造流的Builder对象)
+     */
 
 }
