@@ -21,7 +21,14 @@ NodeInfo用来描述WorkServer的基本信息；
 分布式锁的实现：<br/>
 redis<br/>
 zookeeper<br/>
-两种方式，使用zookeeper实现独享锁和读写锁
+两种方式，使用zookeeper实现分布式锁
+
+
+
+###### 
+基于Zookeeper实现分布式锁，其实是不常用的。  
+虽然它实现锁十分优雅，但编程复杂，同时还要单独维护一套Zookeeper集群，频繁的Watch对Zookeeper集群的压力还是蛮大的，
+如果不是原有的项目中已有Zookeeper，同时锁的量级比较小的话，还是不用为妙。
 
 ## 代码使用slf4j的接口，具体日志实现框架用log4j标准输出日志格式：控制台、文件、滚动日期文件、固定大小文件以及ERROR级别日志发送邮件<br/>
 ####  未完待续

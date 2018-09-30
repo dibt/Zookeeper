@@ -16,4 +16,6 @@ import java.math.BigDecimal;
 public class User implements Serializable {
     private Integer id;
     private String name;
+
+    private NodeInfo nodeInfo = new NodeInfo();
 }

@@ -1,16 +1,16 @@
 package com.di.zkservice;
 
-import com.di.utils.ZkUtils;
 import com.di.pojo.User;
+import com.di.utils.ZkUtils;
 import org.apache.zookeeper.CreateMode;
 import org.junit.Test;
 
-/**
- * Created by bentengdi on 2018/5/17.
- */
+import java.util.Random;
+
+
 public class ZkUnitTest {
     @Test
-    public void cerateNodeTest() {
+    public void createNodeTest() {
         User user = new User();
         user.setId(1);
         user.setName("bentengdi");
@@ -18,27 +18,47 @@ public class ZkUnitTest {
        System.out.println(ZkUtils.createNode(path,user, CreateMode.PERSISTENT));
 
     }
+
+    @Test
+    public void createSequentialNodeTest(){
+        String parentPath ="/povosdi/";
+        String prefix = new Random(System.nanoTime()).nextInt(1000000) + "-write-";
+        for(int i = 0;i<10;i++){
+            System.out.println(ZkUtils.createNode(parentPath+prefix,"",CreateMode.EPHEMERAL_SEQUENTIAL));
+        }
+    }
+
+    @Test
+    public void getNodeChildren(){
+        String parentPath = "/povosdi";
+        System.out.println(ZkUtils.getNodeChildren(parentPath));
+    }
+
     @Test
     public void nodeExists(){
         String path="/povosdi";
         System.out.println(ZkUtils.nodeExits(path));
     }
+
     @Test
     public void getNodeDate(){
         String path="/povosdi";
         User user = (User)ZkUtils.getNodeData(path);
         System.out.println(user);
     }
+
     @Test
     public void deleteSingleNode(){
         String path="/povosdi";
         System.out.println(ZkUtils.deleteSingleNode(path));
     }
+
     @Test
     public void deleteNode(){
         String path="/povosdi";
         System.out.println(ZkUtils.deleteNode(path));
     }
+
     @Test
     public void writeData(){
         String path = "/povosdi";
@@ -51,6 +71,7 @@ public class ZkUnitTest {
         ZkUtils.writeData(path,user);
         System.out.println(ZkUtils.getNodeData(path));
     }
+
     @Test
     public void subscribeChildrenChanges() throws InterruptedException {
         String path = "/povosdi";
@@ -74,6 +95,7 @@ public class ZkUnitTest {
          * -----------
          */
     }
+
     @Test
     public void subscribeDataChanges() throws InterruptedException {
         String path = "/povosdi";
@@ -95,5 +117,6 @@ public class ZkUnitTest {
          */
 
     }
+
 
 }

@@ -115,4 +115,13 @@ public class ZkUtils {
          */
         zkClient.subscribeDataChanges(path, new ZKDataListener());
     }
+
+    /**
+     * 获取节点下的所有子节点
+     * @param parentPath
+     * @return
+     */
+    public static List<String> getNodeChildren(String parentPath){
+        return zkClient.getChildren(parentPath);
+    }
 }

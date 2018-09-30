@@ -3,6 +3,9 @@ package com.di.enums;
 import lombok.Getter;
 
 
+/**
+ * 锁状态
+ */
 @Getter
 public enum LockStatus {
     LOCK(0,"获取锁"),
