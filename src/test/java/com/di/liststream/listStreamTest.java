@@ -16,47 +16,48 @@ import static java.util.stream.Collectors.*;
 
 public class listStreamTest {
 
-    public List<TestModel> getList(){
+    public List<TestModel> getList() {
         List<TestModel> list = new ArrayList<>();
-        for(int i=0; i<10; i++){
-            list.add(new TestModel(i,"test"+i,new BigDecimal(Math.random())));
+        for (int i = 0; i < 10; i++) {
+            list.add(new TestModel(i, "test" + i, new BigDecimal(Math.random())));
         }
         return list;
     }
 
     /**
      * list count()
-     *
+     * <p>
      * list中元素个数;
      */
     @Test
-    public void listStreamCountTest(){
+    public void listStreamCountTest() {
         System.out.println(getList().parallelStream().count());
 
     }
 
     /**
      * list distinct()
-     *
+     * <p>
      * list去重  默认去重标准Object#equals(Object)
      * forEach() 并行处理,输出结果顺序不确定
      * forEachOrdered() 顺序处理 严格按照list顺序输出
      */
     @Test
-    public void listStreamDistinct(){
+    public void listStreamDistinct() {
         //list中添加两个相同的对象
         List<TestModel> list = getList();
-        TestModel testModel = new TestModel(4,"aesvd",new BigDecimal(Math.random()));
+        TestModel testModel = new TestModel(4, "aesvd", new BigDecimal(Math.random()));
         TestModel testModel1 = testModel;
-        list.addAll(Arrays.asList(testModel,testModel1));
+        list.addAll(Arrays.asList(testModel, testModel1));
 
         list.parallelStream().distinct().forEachOrdered(System.out::println);
     }
 
     /**
      * list filter()
-     *
+     * <p>
      * list去重 根据list中对象的id去重
+     *
      * @param keyExtractor
      * @param <T>
      * @return
@@ -65,22 +66,23 @@ public class listStreamTest {
         Set<Object> seen = ConcurrentHashMap.newKeySet();
         return t -> seen.add(keyExtractor.apply(t));
     }
+
     @Test
     public void listStreamFilterById() {
         //list中添加一个id相同的对象
         List<TestModel> list = getList();
-        TestModel testModel = new TestModel(0,"test00",new BigDecimal(Math.random()));
+        TestModel testModel = new TestModel(0, "test00", new BigDecimal(Math.random()));
         list.addAll(Arrays.asList(testModel));
         list.parallelStream().filter(distinctByKey(TestModel::getId)).forEach(System.out::println);
     }
 
     /**
      * list filter()
-     *
+     * <p>
      * 根据name进行过滤
      */
     @Test
-    public void listStreamFilterByName(){
+    public void listStreamFilterByName() {
         getList().parallelStream().filter(testModel -> (!testModel.getName().contains("8"))).forEach(System.out::println);
     }
 
@@ -89,7 +91,7 @@ public class listStreamTest {
      * 将对象和属性映射成一对一的map 拿所有对象的某个属性
      */
     @Test
-    public void listStreamMap(){
+    public void listStreamMap() {
         List<String> list = getList().parallelStream().map(TestModel::getName).collect(toList());
         list.stream().forEach(System.out::println);
     }
@@ -99,8 +101,8 @@ public class listStreamTest {
      * 将对象和属性映射成一对一的map 对所有对象的某个属性求和
      */
     @Test
-    public void listStreamMapSum(){
-        BigDecimal totalPrice = getList().parallelStream().map(TestModel::getPrice).reduce(BigDecimal.ZERO,BigDecimal::add);
+    public void listStreamMapSum() {
+        BigDecimal totalPrice = getList().parallelStream().map(TestModel::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
         System.out.println(totalPrice);
     }
 
@@ -112,22 +114,24 @@ public class listStreamTest {
      * 通过使用Function接口中的默认方法identity()来改进代码
      */
     @Test
-    public void listStreamToMap(){
+    public void listStreamToMap() {
         List<TestModel> list = getList();
         TestModel testModel = new TestModel(0,"test00",new BigDecimal(Math.random()));
         list.addAll(Arrays.asList(testModel));
+        //toMap  value为null的情况 报空指针错误
+        //Collectors.toMap底层是基于Map.merge方法来实现的，而merge中value是不能为null的，如果为null，就会抛出空指针异常
+        //TestModel testModel = new TestModel(11, null, new BigDecimal(Math.random()));
+        //list.addAll(Arrays.asList(testModel));
+        //Map<Integer, String> testModelMap = list.parallelStream().collect(Collectors.toMap(TestModel::getId, TestModel::getName));
         //根据一个字段维度转map
         //Map<Integer,TestModel> testModelMap = list.parallelStream().collect(toMap(TestModel::getId,Function.identity(),(t1,t2)->t1));
         //Map<Integer,TestModel> testModelMap = list.parallelStream().collect(toMap(TestModel::getId,part->part,(t1,t2)->t1));
         //根据多个字段维度转map
         Map<Object,Object> testModelMap = list.parallelStream().collect(toMap(key->key.getId()+key.getName(),part->part,(t1,t2)->t1));
-        showMap(testModelMap);
-
-    }
-    private void showMap(Map<Object,Object> map){
-        map.keySet().forEach(key->{
-            System.out.println("key = "+key+",value = "+map.get(key));
+        testModelMap.keySet().forEach(key -> {
+            System.out.println("key = " + key + ",value = " + testModelMap.get(key));
         });
+
     }
 
     /**
@@ -135,13 +139,13 @@ public class listStreamTest {
      * 将属性值相同的放在一起
      */
     @Test
-    public void listStreamGroupBy(){
+    public void listStreamGroupBy() {
         List<TestModel> list = getList();
-        TestModel testModel = new TestModel(0,"test00",new BigDecimal(Math.random()));
+        TestModel testModel = new TestModel(0, "test00", new BigDecimal(Math.random()));
         list.addAll(Arrays.asList(testModel));
-        Map<Integer,List<TestModel>> map = list.parallelStream().collect(groupingBy(TestModel::getId));
-        map.keySet().forEach(key->{
-            System.out.println("key = "+key+",value = "+map.get(key));
+        Map<Integer, List<TestModel>> map = list.parallelStream().collect(groupingBy(TestModel::getId));
+        map.keySet().forEach(key -> {
+            System.out.println("key = " + key + ",value = " + map.get(key));
         });
     }
 
@@ -150,9 +154,9 @@ public class listStreamTest {
      * 获取最大值、最小值、平均值、总和值、总数。
      */
     @Test
-    public void listStream(){
+    public void listStream() {
         //DoubleSummaryStatistics summaryStatistics = Stream.of(1, 3, 4).collect(Collectors.summarizingDouble(x -> x));
-        IntSummaryStatistics intSummaryStatistics =getList().parallelStream().map(TestModel::getId).collect(toList()).parallelStream().collect(summarizingInt(i -> i));
+        IntSummaryStatistics intSummaryStatistics = getList().parallelStream().map(TestModel::getId).collect(toList()).parallelStream().collect(summarizingInt(i -> i));
         System.out.println(intSummaryStatistics.getMax());
     }
 
@@ -161,12 +165,12 @@ public class listStreamTest {
      * 把数据分成两部分，key为ture/false
      */
     @Test
-    public void listStreamPartition(){
-        Map<Boolean, List<Integer>> collect4 = Stream.of(1, 3, 4).collect(Collectors.partitioningBy(x -> x >2));
+    public void listStreamPartition() {
+        Map<Boolean, List<Integer>> collect4 = Stream.of(1, 3, 4).collect(Collectors.partitioningBy(x -> x > 2));
         //第二个参数默认是Collectors.toList()
         //Map<Boolean, Long> collect4 = Stream.of(1, 3, 4).collect(Collectors.partitioningBy(x -> x > 2, Collectors.counting()));
-        collect4.keySet().forEach(key->{
-            System.out.println("key = "+key+",value = "+collect4.get(key));
+        collect4.keySet().forEach(key -> {
+            System.out.println("key = " + key + ",value = " + collect4.get(key));
         });
     }
 
@@ -175,18 +179,18 @@ public class listStreamTest {
      * 拼接字符串
      */
     @Test
-    public void listStreamJoin(){
+    public void listStreamJoin() {
         System.out.println(Stream.of("a", "b", "c").collect(Collectors.joining(",")));
     }
 
     /**
-     *list reducing()
+     * list reducing()
      * 在求累计值的时候，可以对参数值进行改变(第二个参数)
      * reduce没有第二个参数
      */
     @Test
-    public void listStreamReducing(){
-        System.out.println(Stream.of(1,3,4).reduce(2,(x,y) -> x+y));
+    public void listStreamReducing() {
+        System.out.println(Stream.of(1, 3, 4).reduce(2, (x, y) -> x + y));
         System.out.println(Stream.of(1, 3, 4).collect(Collectors.reducing(2, x -> x + 1, (x, y) -> x + y)));
     }
 
@@ -196,11 +200,11 @@ public class listStreamTest {
      * 注意, toMap 的最后一个参数是 Supplier<Map> ， 是 Map 提供器，而不是 Map 对象。
      */
     @Test
-    public void listStreamSupplier(){
-        List<Integer> list = Arrays.asList(1,2,3,4,5);
-        Supplier<Map<Integer,Integer>> mapSupplier = () -> list.stream().collect(Collectors.toMap(x->x,y-> y * y));
+    public void listStreamSupplier() {
+        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
+        Supplier<Map<Integer, Integer>> mapSupplier = () -> list.stream().collect(Collectors.toMap(x -> x, y -> y * y));
         //将Map中相同的key的value相加
-        Map<Integer, Integer> mapValueAdd = list.stream().collect(Collectors.toMap(x->x, y->y, (v1,v2) -> v1+v2, mapSupplier));
+        Map<Integer, Integer> mapValueAdd = list.stream().collect(Collectors.toMap(x -> x, y -> y, (v1, v2) -> v1 + v2, mapSupplier));
         System.out.println(mapValueAdd);
     }
 
@@ -209,8 +213,8 @@ public class listStreamTest {
      * 先执行collect操作后再执行第二个参数的表达式
      */
     @Test
-    public void listStreamCollectingAndThen(){
-        String str= Stream.of("a", "b", "c").collect(Collectors.collectingAndThen(Collectors.joining(","), x -> x + "d"));
+    public void listStreamCollectingAndThen() {
+        String str = Stream.of("a", "b", "c").collect(Collectors.collectingAndThen(Collectors.joining(","), x -> x + "d"));
         System.out.println(str);
 
     }
@@ -219,7 +223,7 @@ public class listStreamTest {
      * list mapping()
      */
     @Test
-    public void listStreamMapping(){
+    public void listStreamMapping() {
         Predicate<Integer> predicate = x -> x > 5;
         System.out.println(predicate.test(2));
         System.out.println(Stream.of("a", "b", "c").collect(Collectors.mapping(x -> x.toUpperCase(), Collectors.joining(","))));
@@ -229,8 +233,8 @@ public class listStreamTest {
      * 一个二维数组转换为一维数组
      */
     @Test
-    public void listStreamFlatMap(){
-        List<List<Integer>> nums = Arrays.asList(Arrays.asList(1,2,3), Arrays.asList(1,4,9), Arrays.asList(1,8,27));
+    public void listStreamFlatMap() {
+        List<List<Integer>> nums = Arrays.asList(Arrays.asList(1, 2, 3), Arrays.asList(1, 4, 9), Arrays.asList(1, 8, 27));
         Stream<List<Integer>> listStream = Stream.of(Arrays.asList(1, 2, 3), Arrays.asList(2, 3, 6));
         listStream.flatMap(item -> item.parallelStream()).collect(toList()).forEach(System.out::println);
         Stream.of(Arrays.asList(1, 2, 3), Arrays.asList(2, 3, 6)).flatMap(lists -> lists.stream()).collect(Collectors.toList()).forEach(System.out::print);
@@ -241,7 +245,7 @@ public class listStreamTest {
      * 流连接操作
      */
     @Test
-    public void listStreamConcat(){
+    public void listStreamConcat() {
         Stream.concat(Stream.of(1, 2), Stream.of(3)).forEach(System.out::print);
     }
 
@@ -250,7 +254,7 @@ public class listStreamTest {
      * peek：生成一个包含原Stream的所有元素的新Stream，新Stream每个元素被消费之前都会执行peek给定的消费函数
      */
     @Test
-    public void listStreamPeek(){
+    public void listStreamPeek() {
         Stream.of(2, 4).peek(x -> System.out.print(x - 1)).forEach(System.out::print);
     }
 
