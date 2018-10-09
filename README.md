@@ -21,7 +21,8 @@ NodeInfo用来描述WorkServer的基本信息；
 分布式锁的实现：<br/>
 redis<br/>
 zookeeper<br/>
-两种方式，使用zookeeper实现分布式锁
+两种方式  
+1.使用zookeeper实现分布式锁(读写锁),注意<b>惊群问题</b>
 
 
 
