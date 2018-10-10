@@ -26,7 +26,7 @@ public class listStreamTest {
 
     /**
      * list count()
-     * <p>
+     * 
      * list中元素个数;
      */
     @Test
@@ -55,7 +55,7 @@ public class listStreamTest {
 
     /**
      * list filter()
-     * <p>
+     *
      * list去重 根据list中对象的id去重
      *
      * @param keyExtractor
