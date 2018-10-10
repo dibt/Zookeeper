@@ -137,13 +137,16 @@ public class listStreamTest {
     /**
      * list groupBy()
      * 将属性值相同的放在一起
+     * 有三种方法，查看源码可以知道前两个方法最终调用第三个方法，第二个参数默认HashMap::new 第三个参数默认Collectors.toList()。
      */
     @Test
     public void listStreamGroupBy() {
         List<TestModel> list = getList();
         TestModel testModel = new TestModel(0, "test00", new BigDecimal(Math.random()));
         list.addAll(Arrays.asList(testModel));
-        Map<Integer, List<TestModel>> map = list.parallelStream().collect(groupingBy(TestModel::getId));
+        //Map<Integer, List<TestModel>> map = list.parallelStream().collect(Collectors.groupingBy(TestModel::getId));
+        //Map<Integer, Map<String,List<TestModel>>> map = list.parallelStream().collect(Collectors.groupingBy(TestModel::getId,groupingBy(TestModel::getName)));
+        Map<Integer, Long> map = list.parallelStream().collect(Collectors.groupingBy(TestModel::getId,HashMap::new,Collectors.counting()));
         map.keySet().forEach(key -> {
             System.out.println("key = " + key + ",value = " + map.get(key));
         });
@@ -265,6 +268,11 @@ public class listStreamTest {
      * 流到终值的转换： 比如 toArray（转为数组），reduce（推导结果），collect（聚合结果），min(最小值), max(最大值), count (元素个数)， anyMatch (任一匹配), allMatch(所有都匹配)， noneMatch(一个都不匹配)， findFirst（选择首元素），findAny(任选一元素) ；
      * 直接遍历： forEach (不保序遍历，比如并行流), forEachOrdered（保序遍历) ；
      * 构造流： empty (构造空流)，of (单个元素的流及多元素顺序流)，iterate (无限长度的有序顺序流)，generate (将数据提供器转换成无限非有序的顺序流)， concat (流的连接)， Builder (用于构造流的Builder对象)
+     *
+     * Predicate<T> 接受一个输入参数,返回一个布尔类型  (T)->boolean
+     * Function<T,R> (T)->(R) T参R返
+     * Supplier<T> ()->(T)  无参,T返
+     * Counsumer<T> (T)->()  T参,无返
      */
 
 }
