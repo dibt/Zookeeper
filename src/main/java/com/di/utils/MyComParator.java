@@ -2,6 +2,9 @@ package com.di.utils;
 
 import java.util.Comparator;
 
+/**
+ * 自定义比较器
+ */
 public class MyComParator implements Comparator<String> {
     @Override
     public int compare(String s1, String s2) {

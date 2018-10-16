@@ -26,7 +26,7 @@ public class listStreamTest {
 
     /**
      * list count()
-     * 
+     *
      * list中元素个数;
      */
     @Test
